@@ -21,44 +21,44 @@
         app:layout_constraintVertical_bias="0.113" />
 
     <Button
-        android:id="@+id/button_simple"
+        android:id="@+id/simpleButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Simple"
-        app:layout_constraintBottom_toTopOf="@+id/button_advanced"
+        app:layout_constraintBottom_toTopOf="@+id/advancedButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline" />
 
     <Button
-        android:id="@+id/button_advanced"
+        android:id="@+id/advancedButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Advanced"
-        app:layout_constraintBottom_toTopOf="@+id/button_about"
+        app:layout_constraintBottom_toTopOf="@+id/aboutButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_simple" />
+        app:layout_constraintTop_toBottomOf="@+id/simpleButton" />
 
     <Button
-        android:id="@+id/button_about"
+        android:id="@+id/aboutButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="About"
-        app:layout_constraintBottom_toTopOf="@+id/button_exit"
+        app:layout_constraintBottom_toTopOf="@+id/exitButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_advanced" />
+        app:layout_constraintTop_toBottomOf="@+id/advancedButton" />
 
     <Button
-        android:id="@+id/button_exit"
+        android:id="@+id/exitButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Exit"
         app:layout_constraintBottom_toTopOf="@+id/guideline2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_about" />
+        app:layout_constraintTop_toBottomOf="@+id/aboutButton" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
