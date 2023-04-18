@@ -9,11 +9,18 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
         val simpleButton = findViewById<Button>(R.id.simpleButton)
 
         simpleButton.setOnClickListener {
             val intent = Intent(this, SimpleCalcActivity::class.java)
             startActivity(intent)
+        }
+
+        val exitButton = findViewById<Button>(R.id.exitButton)
+
+        exitButton.setOnClickListener {
+            finishAffinity()
         }
     }
 }
