@@ -4,4 +4,5 @@
     <dimen name="textfontsizeAC">26sp</dimen>
     <dimen name="textfontsizeEq">22sp</dimen>
     <dimen name="textfontsizeResult">38sp</dimen>
+    <dimen name="textfontsizes">18sp</dimen>
 </resources>
