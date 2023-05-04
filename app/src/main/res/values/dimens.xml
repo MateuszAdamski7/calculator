@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="textfontsize">30sp</dimen>
+    <dimen name="textfontsizeAC">26sp</dimen>
+    <dimen name="textfontsizeEq">22sp</dimen>
+    <dimen name="textfontsizeResult">38sp</dimen>
+</resources>
