@@ -17,6 +17,20 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        val advancedButton = findViewById<Button>(R.id.advancedButton)
+
+        advancedButton.setOnClickListener {
+            val intent = Intent(this, AdvancedCalcActivity::class.java)
+            startActivity(intent)
+        }
+
+        val aboutButton = findViewById<Button>(R.id.aboutButton)
+
+        aboutButton.setOnClickListener {
+            val intent = Intent(this, AboutActivity::class.java)
+            startActivity(intent)
+        }
+
         val exitButton = findViewById<Button>(R.id.exitButton)
 
         exitButton.setOnClickListener {
