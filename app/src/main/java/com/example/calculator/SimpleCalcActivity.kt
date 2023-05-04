@@ -90,6 +90,9 @@ class SimpleCalcActivity : AppCompatActivity() {
     }
     fun equalsAction(view: View) {
         result.text = getResult()
+        if(result.text.endsWith(".0")){
+            result.text = result.text.subSequence(0,result.text.length-2)
+        }
     }
 
     private fun getResult():String{
