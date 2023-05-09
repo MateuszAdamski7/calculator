@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="textfontsize">50sp</dimen>
+    <dimen name="textfontsizeAC">44sp</dimen>
+    <dimen name="textfontsizeEq">36sp</dimen>
+    <dimen name="textfontsizeResult">42sp</dimen>
+    <dimen name="textfontsizes">32sp</dimen>
+</resources>
