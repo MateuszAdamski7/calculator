@@ -6,6 +6,7 @@ import android.text.TextUtils.lastIndexOf
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 
 class SimpleCalcActivity : AppCompatActivity() {
 
@@ -74,6 +75,12 @@ class SimpleCalcActivity : AppCompatActivity() {
             canAddOperation = false
             canAddDecimal = true
         }
+        if(view is Button && (equation.text.last() == '/' || equation.text.last() == '*' || equation.text.last() == '-' || equation.text.last() == '+'))
+        {
+            var temp = equation.text.reversed().toString()
+            temp = temp.replaceFirst(equation.text.last().toString(),view.text.toString())
+            equation.text = temp.reversed()
+        }
     }
     fun ACAction(view: View) {
         result.text = ""
@@ -88,6 +95,7 @@ class SimpleCalcActivity : AppCompatActivity() {
         {
             equation.text = equation.text.subSequence(0, length - 1)
         }
+        canAddOperation = true
     }
     fun equalsAction(view: View) {
         result.text = getResult()
@@ -183,23 +191,26 @@ class SimpleCalcActivity : AppCompatActivity() {
         var firstDigitMinus = false
         for((index, character) in equation.text.withIndex())
         {
-            if(character.equals('-') && firstDigitMinus){
-                list.add(if (firstDigitMinus) -currentDigit.toFloat() else currentDigit.toFloat())
-                currentDigit = ""
-                list.add('+')
+            if(character.equals('-') && currentDigit==""){
+                firstDigitMinus = true
                 continue
-
             }
-            if(character.equals('+') && index==0)continue
+            if(character.equals('+') && (index==0 || currentDigit==""))continue
             if(character.isDigit() || character == '.')
                 currentDigit += character
             else
             {
-                if ((index == 0 && character == '-' && equation.text.length > 1) || (list.isNotEmpty() && character == '-' && (list.last() == '/' || list.last() == '*'))) {
+                if (index == 0 && character == '-' && equation.text.length > 1) {
                     firstDigitMinus = true
                 }
                 else
                 {
+                    try {
+                        val temp = currentDigit.toFloat()
+                    }catch ( e: NumberFormatException){
+                        Toast.makeText(getApplicationContext(), "Nieprawidłowe działanie", Toast.LENGTH_SHORT).show();
+                        return mutableListOf()
+                    }
                     list.add(if (firstDigitMinus) -currentDigit.toFloat() else currentDigit.toFloat())
                     currentDigit = ""
                     firstDigitMinus = false
