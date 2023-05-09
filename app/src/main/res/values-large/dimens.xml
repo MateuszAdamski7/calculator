@@ -5,4 +5,6 @@
     <dimen name="textfontsizeEq">36sp</dimen>
     <dimen name="textfontsizeResult">42sp</dimen>
     <dimen name="textfontsizes">32sp</dimen>
+    <dimen name="maintext">32sp</dimen>
+    <dimen name="maintextc">54sp</dimen>
 </resources>

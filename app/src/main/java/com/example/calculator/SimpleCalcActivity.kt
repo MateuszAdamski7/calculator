@@ -59,6 +59,7 @@ class SimpleCalcActivity : AppCompatActivity() {
                 equation.append(view.text)
 
             canAddOperation = true
+            minus = false
         }
     }
     fun operationAction(view: View) {
@@ -182,14 +183,23 @@ class SimpleCalcActivity : AppCompatActivity() {
         var firstDigitMinus = false
         for((index, character) in equation.text.withIndex())
         {
+            if(character.equals('-') && firstDigitMinus){
+                list.add(if (firstDigitMinus) -currentDigit.toFloat() else currentDigit.toFloat())
+                currentDigit = ""
+                list.add('+')
+                continue
+
+            }
             if(character.equals('+') && index==0)continue
             if(character.isDigit() || character == '.')
                 currentDigit += character
             else
             {
-                if (index == 0 && character == '-' && equation.text.length > 1) {
+                if ((index == 0 && character == '-' && equation.text.length > 1) || (list.isNotEmpty() && character == '-' && (list.last() == '/' || list.last() == '*'))) {
                     firstDigitMinus = true
-                } else {
+                }
+                else
+                {
                     list.add(if (firstDigitMinus) -currentDigit.toFloat() else currentDigit.toFloat())
                     currentDigit = ""
                     firstDigitMinus = false
@@ -211,7 +221,7 @@ class SimpleCalcActivity : AppCompatActivity() {
             var t = equation.text
             var last:Char
             try{
-                last = equation.text.last { c -> c.equals('-') || c.equals('+')}
+                last = equation.text.last { c -> c.equals('-') || c.equals('+') || c.equals('/') || c.equals('*')}
             } catch ( e:NoSuchElementException){
                 last = '+'
             }
@@ -233,6 +243,19 @@ class SimpleCalcActivity : AppCompatActivity() {
                     else
                         t = t.substring(0,g) + '+' + t.substring(g+1)
                 }
+                '/' ->
+                {
+                    if(g==0) t = t.substring(g+1)
+                    else
+                        t = t.substring(0,g+1) + '-' + t.substring(g+1)
+                }
+                '*' ->
+                {
+                    if(g==0) t = t.substring(g+1)
+                    else
+                        t = t.substring(0,g+1) + '-' + t.substring(g+1)
+                }
+
             }
             equation.text = t
         }

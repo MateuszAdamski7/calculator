@@ -1,9 +1,7 @@
 package com.example.calculator
 
-import android.animation.FloatEvaluator
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
@@ -96,10 +94,11 @@ class AdvancedCalcActivity : AppCompatActivity() {
     fun equalsAction(view: View) {
         val t = equation.text
         if('%' in t || "sin" in t || "cos" in t || "tan" in t || "ln" in t || "sqrt" in t || "^" in t || "log" in t){
-            result.text = getAdResult()
+            val temp:String = getAdResult()
+            result.text = getResult(temp)
             return
         }
-        result.text = getResult()
+        result.text = getResult("")
         if(result.text.endsWith(".0")){
             result.text = result.text.subSequence(0,result.text.length-2)
         }
@@ -109,71 +108,86 @@ class AdvancedCalcActivity : AppCompatActivity() {
         val matchResult = regex.findAll(input).toList().lastOrNull()
         return matchResult?.value?.toFloatOrNull()
     }
+    fun extractLastFloatNumberAfter(input: String, exp: String): String {
+        val regex = Regex("$exp(\\d*\\.?\\d+?)")
+        val matchResult = regex.findAll(input).toList().lastOrNull()
+        return matchResult?.groupValues?.last().toString()
+    }
+    fun extractLastFloatNumberBefore(input: String, exp: String): String {
+        val regex = Regex("(\\d*\\.?\\d+?)$exp")
+        val matchResult = regex.findAll(input).toList().lastOrNull()
+        return matchResult?.groupValues?.last().toString()
+    }
 
     private fun getAdResult():String{
         var t = equation.text.toString()
         var num1:Float? = null
         var num2:Float? = null
-        if('%' in t){
-            num1 = extractLastFloatNumber(t)
-            if (num1 != null) {
-                num2 = num1/100
+        while('%' in t || "sin" in t || "cos" in t || "tan" in t || "ln" in t || "sqrt" in t || "^" in t || "log" in t)
+        {
+            if('%' in t){
+                val temp:String = extractLastFloatNumberBefore(t,"%")
+                num1 = temp.toFloatOrNull()
+                if (num1 != null) {
+                    num2 = num1/100
+                }
+                else break
+
+                t = t.replace("$temp%",num2.toString())
             }
-            if (num1 != null) {
-                t = t.removePrefix(num1.toInt().toString())
-                t = t.removePrefix("%")
+            else if("sin" in t){
+                val temp:String = extractLastFloatNumberAfter(t,"sin")
+                println("temp " + temp)
+                num1 = temp.toFloatOrNull()
+                println("num1 " + num1)
+                var res = num1?.let { sin(it) }
+                t = t.replace("sin$temp",res.toString())
             }
-            t += num2.toString()
-            return t
-        }
-        else if("sin" in t){
-            num1 = extractLastFloatNumber(t)
-            var res = num1?.let { sin(it) }
-            t = res.toString()
-        }
-        else if("cos" in t){
-            num1 = extractLastFloatNumber(t)
-            var res = num1?.let { cos(it.toDouble()) }
-            t = res.toString()
-        }
-        else if("tan" in t){
-            num1 = extractLastFloatNumber(t)
-            var res = num1?.let { tan(it) }
-            t = res.toString()
-        }
-        else if("sqrt" in t){
-            num1 = extractLastFloatNumber(t)
-            var res = num1?.let { sqrt(it) }
-            t = res.toString()
-        }
-        else if("ln" in t){
-            num1 = extractLastFloatNumber(t)
-            var res = num1?.let { ln(it) }
-            t = res.toString()
-        }
-        else if("log" in t){
-            num1 = extractLastFloatNumber(t)
-            var res = num1?.let { log(it.toDouble(), 10.0) }
-            t = res.toString()
-        }
-        else if("^" in t){
-            val regex = Regex("""[-+]?\d*\.?\d+?""")
-            val matchResult = regex.find(t)
-            num1 = matchResult?.value?.toFloatOrNull()
-            num2 = extractLastFloatNumber(t)
-            var res = num1?.let { num2?.let { it1 -> pow(it.toDouble(), it1.toDouble()) } }
-            t = res.toString()
+            else if("cos" in t){
+                val temp:String = extractLastFloatNumberAfter(t,"cos")
+                num1 = temp.toFloatOrNull()
+                var res = num1?.let { cos(it.toDouble()) }
+                t = t.replace("cos$temp",res.toString())
+            }
+            else if("tan" in t){
+                val temp:String = extractLastFloatNumberAfter(t,"tan")
+                num1 = temp.toFloatOrNull()
+                var res = num1?.let { tan(it) }
+                t = t.replace("tan$temp",res.toString())
+            }
+            else if("sqrt" in t){
+                val temp:String = extractLastFloatNumberAfter(t,"sqrt")
+                num1 = temp.toFloatOrNull()
+                var res = num1?.let { sqrt(it) }
+                t = t.replace("sqrt$temp",res.toString())
+            }
+            else if("ln" in t){
+                val temp:String = extractLastFloatNumberAfter(t,"ln")
+                num1 = temp.toFloatOrNull()
+                var res = num1?.let { ln(it) }
+                t = t.replace("ln$temp",res.toString())
+            }
+            else if("log" in t){
+                val temp:String = extractLastFloatNumberAfter(t,"log")
+                num1 = temp.toFloatOrNull()
+                var res = num1?.let { log(it.toDouble(), 10.0) }
+                t = t.replace("log$temp",res.toString())
+            }
+            else if("^" in t){
+                val temp1:String = extractLastFloatNumberBefore(t,"\\^")
+                val temp2:String = extractLastFloatNumberAfter(t,"\\^")
+                num1 = temp1.toFloatOrNull()
+                num2 = temp2.toFloatOrNull()
+                val res = num1?.let { num2?.let { it1 -> pow(it.toDouble(), it1.toDouble()) } }
+                t = t.replace("$temp1^$temp2",res.toString())
+            }
         }
 
-        equation.text = t
-        if(t.endsWith(".0")){
-            t = t.subSequence(0,t.length-2) as String
-        }
         return t
     }
 
-    private fun getResult():String{
-        val digitsOperators = digitsOperators()
+    private fun getResult(eqstring: String?):String{
+        val digitsOperators = digitsOperators(eqstring.toString())
         if(digitsOperators.isEmpty()) return ""
 
         val timesDivision = timesDivisionCalculate(digitsOperators)
@@ -252,21 +266,32 @@ class AdvancedCalcActivity : AppCompatActivity() {
         return newList
     }
 
-    private fun digitsOperators(): MutableList<Any>
+    private fun digitsOperators(eqstring: String): MutableList<Any>
     {
         val list = mutableListOf<Any>()
         var currentDigit = ""
         var firstDigitMinus = false
-        for((index, character) in equation.text.withIndex())
+        var tempEq:String = eqstring
+        if (tempEq.isEmpty()) tempEq=equation.text.toString()
+        for((index, character) in tempEq.withIndex())
         {
+            if(character.equals('-') && firstDigitMinus){
+                list.add(if (firstDigitMinus) -currentDigit.toFloat() else currentDigit.toFloat())
+                currentDigit = ""
+                list.add('+')
+                continue
+
+            }
             if(character.equals('+') && index==0)continue
             if(character.isDigit() || character == '.')
                 currentDigit += character
             else
             {
-                if (index == 0 && character == '-' && equation.text.length > 1) {
+                if ((index == 0 && character == '-' && equation.text.length > 1) || (list.isNotEmpty() && character == '-' && (list.last() == '/' || list.last() == '*'))) {
                     firstDigitMinus = true
-                } else {
+                }
+                else
+                {
                     list.add(if (firstDigitMinus) -currentDigit.toFloat() else currentDigit.toFloat())
                     currentDigit = ""
                     firstDigitMinus = false
@@ -278,7 +303,6 @@ class AdvancedCalcActivity : AppCompatActivity() {
         if(currentDigit != "")
             list.add(if (firstDigitMinus) -currentDigit.toFloat() else currentDigit.toFloat())
 
-
         return list
     }
 
@@ -289,7 +313,7 @@ class AdvancedCalcActivity : AppCompatActivity() {
             var t = equation.text
             var last:Char
             try{
-                last = equation.text.last { c -> c.equals('-') || c.equals('+')}
+                last = equation.text.last { c -> c.equals('-') || c.equals('+') || c.equals('/') || c.equals('*')}
             } catch ( e:NoSuchElementException){
                 last = '+'
             }
@@ -311,6 +335,19 @@ class AdvancedCalcActivity : AppCompatActivity() {
                     else
                         t = t.substring(0,g) + '+' + t.substring(g+1)
                 }
+                '/' ->
+                {
+                    if(g==0) t = t.substring(g+1)
+                    else
+                        t = t.substring(0,g+1) + '-' + t.substring(g+1)
+                }
+                '*' ->
+                {
+                    if(g==0) t = t.substring(g+1)
+                    else
+                        t = t.substring(0,g+1) + '-' + t.substring(g+1)
+                }
+
             }
             equation.text = t
         }
