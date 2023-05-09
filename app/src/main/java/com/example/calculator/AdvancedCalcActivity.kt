@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import java.lang.Math.cos
 import java.lang.Math.pow
 import kotlin.math.*
@@ -131,46 +132,71 @@ class AdvancedCalcActivity : AppCompatActivity() {
                 if (num1 != null) {
                     num2 = num1/100
                 }
-                else break
+                else{
+                    Toast.makeText(getApplicationContext(), "Nieprawidłowe działanie", Toast.LENGTH_SHORT).show();
+                    return "error"
+                }
 
                 t = t.replace("$temp%",num2.toString())
             }
             else if("sin" in t){
                 val temp:String = extractLastFloatNumberAfter(t,"sin")
-                println("temp " + temp)
                 num1 = temp.toFloatOrNull()
-                println("num1 " + num1)
-                var res = num1?.let { sin(it) }
+                val res = num1?.let { sin(it) }
+                if(temp.isEmpty() || num1 == null){
+                    Toast.makeText(getApplicationContext(), "Nieprawidłowe działanie", Toast.LENGTH_SHORT).show();
+                    return "error"
+                }
                 t = t.replace("sin$temp",res.toString())
             }
             else if("cos" in t){
                 val temp:String = extractLastFloatNumberAfter(t,"cos")
                 num1 = temp.toFloatOrNull()
-                var res = num1?.let { cos(it.toDouble()) }
+                if(temp.isEmpty() || num1 == null){
+                    Toast.makeText(getApplicationContext(), "Nieprawidłowe działanie", Toast.LENGTH_SHORT).show();
+                    return "error"
+                }
+                val res = num1.let { cos(it.toDouble()) }
                 t = t.replace("cos$temp",res.toString())
             }
             else if("tan" in t){
                 val temp:String = extractLastFloatNumberAfter(t,"tan")
                 num1 = temp.toFloatOrNull()
-                var res = num1?.let { tan(it) }
+                if(temp.isEmpty() || num1 == null){
+                    Toast.makeText(getApplicationContext(), "Nieprawidłowe działanie", Toast.LENGTH_SHORT).show();
+                    return "error"
+                }
+                val res = num1.let { tan(it) }
                 t = t.replace("tan$temp",res.toString())
             }
             else if("sqrt" in t){
                 val temp:String = extractLastFloatNumberAfter(t,"sqrt")
                 num1 = temp.toFloatOrNull()
-                var res = num1?.let { sqrt(it) }
+                if(temp.isEmpty() || num1 == null){
+                    Toast.makeText(getApplicationContext(), "Nieprawidłowe działanie", Toast.LENGTH_SHORT).show();
+                    return "error"
+                }
+                val res = num1.let { sqrt(it) }
                 t = t.replace("sqrt$temp",res.toString())
             }
             else if("ln" in t){
                 val temp:String = extractLastFloatNumberAfter(t,"ln")
                 num1 = temp.toFloatOrNull()
-                var res = num1?.let { ln(it) }
+                if(temp.isEmpty() || num1 == null){
+                    Toast.makeText(getApplicationContext(), "Nieprawidłowe działanie", Toast.LENGTH_SHORT).show();
+                    return "error"
+                }
+                val res = num1.let { ln(it) }
                 t = t.replace("ln$temp",res.toString())
             }
             else if("log" in t){
                 val temp:String = extractLastFloatNumberAfter(t,"log")
                 num1 = temp.toFloatOrNull()
-                var res = num1?.let { log(it.toDouble(), 10.0) }
+                if(temp.isEmpty() || num1 == null){
+                    Toast.makeText(getApplicationContext(), "Nieprawidłowe działanie", Toast.LENGTH_SHORT).show();
+                    return "error"
+                }
+                val res = num1.let { log(it.toDouble(), 10.0) }
                 t = t.replace("log$temp",res.toString())
             }
             else if("^" in t){
@@ -178,7 +204,11 @@ class AdvancedCalcActivity : AppCompatActivity() {
                 val temp2:String = extractLastFloatNumberAfter(t,"\\^")
                 num1 = temp1.toFloatOrNull()
                 num2 = temp2.toFloatOrNull()
-                val res = num1?.let { num2?.let { it1 -> pow(it.toDouble(), it1.toDouble()) } }
+                if(temp1.isEmpty() || temp2.isEmpty() || num1 == null|| num2 == null){
+                    Toast.makeText(getApplicationContext(), "Nieprawidłowe działanie", Toast.LENGTH_SHORT).show();
+                    return "error"
+                }
+                val res = num1.let { num2.let { it1 -> pow(it.toDouble(), it1.toDouble()) } }
                 t = t.replace("$temp1^$temp2",res.toString())
             }
         }
@@ -187,6 +217,7 @@ class AdvancedCalcActivity : AppCompatActivity() {
     }
 
     private fun getResult(eqstring: String?):String{
+        if (eqstring=="error") return ""
         val digitsOperators = digitsOperators(eqstring.toString())
         if(digitsOperators.isEmpty()) return ""
 
@@ -273,6 +304,7 @@ class AdvancedCalcActivity : AppCompatActivity() {
         var firstDigitMinus = false
         var tempEq:String = eqstring
         if (tempEq.isEmpty()) tempEq=equation.text.toString()
+        if(tempEq.isEmpty()) return list
         for((index, character) in tempEq.withIndex())
         {
             if(character.equals('-') && firstDigitMinus){
